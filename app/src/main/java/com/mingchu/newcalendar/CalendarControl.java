@@ -1,12 +1,14 @@
 package com.mingchu.newcalendar;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
 
 /**
  * Created by wuyinlei on 2017/5/28.
@@ -33,6 +34,8 @@ public class CalendarControl extends LinearLayout implements View.OnClickListene
     private Calendar mCalendar = Calendar.getInstance();
     private ArrayList<Date> mCells;
 
+    private String displayFormat;
+
     public CalendarControl(Context context) {
         this(context, null);
     }
@@ -43,11 +46,22 @@ public class CalendarControl extends LinearLayout implements View.OnClickListene
 
     public CalendarControl(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initControl(context);
+        initControl(context,attrs);
     }
 
 
-    private void initControl(Context context) {
+    private void initControl(Context context,AttributeSet attrs) {
+        TypedArray ta = getContext().obtainStyledAttributes(attrs,R.styleable.NewCanlendar);
+        try {
+            String format = ta.getString(R.styleable.NewCanlendar_dateFromat);
+            displayFormat = format;
+            if (TextUtils.isEmpty(displayFormat)){
+                displayFormat = "MMM yyyy";
+            }
+        }catch (Exception e){
+        }finally {
+            ta.recycle();
+        }
 
         initView(context);
 
@@ -91,7 +105,7 @@ public class CalendarControl extends LinearLayout implements View.OnClickListene
 
     //渲染控件
     private void renderCalendar(Context context) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy MMM");
+        SimpleDateFormat sdf = new SimpleDateFormat(displayFormat);
         mTvTitle.setText(sdf.format(mCalendar.getTime()));
 
         mCells = new ArrayList<>();
@@ -113,7 +127,6 @@ public class CalendarControl extends LinearLayout implements View.OnClickListene
     }
 
 
-
     private class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHolder> {
 
         @Override
@@ -125,9 +138,58 @@ public class CalendarControl extends LinearLayout implements View.OnClickListene
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Date date = mCells.get(position);
+            final Date date = mCells.get(position);
 
             holder.mTvDay.setText(String.valueOf(date.getDate()));
+            Date nowDay = new Date();
+            boolean isThisMonth = false;
+
+            if (date.getMonth() == nowDay.getMonth()){
+                isThisMonth = true;
+            } else {
+                isThisMonth = false;
+            }
+
+            if (isThisMonth){
+                //有效的月份  当月份
+                holder.mTvDay.setTextColor(Color.parseColor("#000000"));
+            } else {
+                //不是当前月份
+                holder.mTvDay.setTextColor(Color.parseColor("#666666"));
+            }
+
+            if (date.getDate() == nowDay.getDate() && nowDay.getMonth() == date.getMonth()
+                    && date.getYear() == nowDay.getYear()){
+                //当天
+                holder.mTvDay.isToday = true;
+                holder.mTvDay.setTextColor(Color.parseColor("#ff0000"));
+
+            } else {
+
+            }
+
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy MM dd");
+            final String result = sdf.format(date.getDate());
+
+            holder.mTvDay.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnItemClickListener != null){
+                        mOnItemClickListener.ItemClick(v,date);
+                    }
+                }
+            });
+
+            holder.mTvDay.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mOnLongClickListener != null){
+                        mOnLongClickListener.onLongItemClick(v,"tip");
+                    }
+                    return true;
+                }
+            });
         }
 
         @Override
@@ -137,26 +199,40 @@ public class CalendarControl extends LinearLayout implements View.OnClickListene
 
         class ViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView mTvDay;
+            private CalendarTextView mTvDay;
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                mTvDay = (TextView) itemView.findViewById(R.id.tv_calendar_day);
-                mTvDay.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(v.getContext(), "点击我了", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mTvDay = (CalendarTextView) itemView.findViewById(R.id.tv_calendar_day);
 
-                mTvDay.setOnLongClickListener(new OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        Toast.makeText(v.getContext(), "长按点击我了", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
+
             }
         }
+
+
+
+
+
+    }
+
+
+    private OnItemLongClickListener mOnLongClickListener;
+
+    public void setOnLongClickListener(OnItemLongClickListener onLongClickListener) {
+        mOnLongClickListener = onLongClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    private OnItemClickListener mOnItemClickListener;
+
+    interface  OnItemClickListener {
+        void ItemClick(View view,Date date);
+    }
+
+    interface  OnItemLongClickListener {
+        void onLongItemClick(View view,String tip);
     }
 }

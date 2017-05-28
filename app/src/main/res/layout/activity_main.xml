@@ -3,12 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     tools:context="com.mingchu.newcalendar.MainActivity">
 
 
     <com.mingchu.newcalendar.CalendarControl
+        android:id="@+id/calendar_control"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:dateFromat="MM yyyy"/>
 
 </RelativeLayout>
