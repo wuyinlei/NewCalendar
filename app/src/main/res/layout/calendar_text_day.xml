@@ -1,11 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.mingchu.newcalendar.CalendarTextView xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          android:layout_width="50dp"
-          android:layout_height="50dp"
-          android:gravity="center"
-          android:id="@+id/tv_calendar_day"
-          android:textSize="24sp"
-          tools:text="12">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="60dp"
+                android:layout_height="70dp"
+                android:gravity="center"
+    >
 
-</com.mingchu.newcalendar.CalendarTextView>
+    <com.mingchu.newcalendar.CalendarTextView
+        android:id="@+id/tv_calendar_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        tools:text="12"/>
+
+    <TextView
+        android:id="@+id/tv_lunar_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_calendar_day"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:maxLength="2"
+        android:textSize="18sp"
+        tools:text="建军节"/>
+
+    <View
+        android:background="#a3a3a3"
+        android:layout_alignParentRight="true"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"/>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:background="#a3a3a3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+</RelativeLayout>

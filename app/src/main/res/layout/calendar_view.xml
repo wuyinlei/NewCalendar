@@ -46,31 +46,31 @@
 
         <TextView
             style="@style/tv_day_style"
-            android:text="Sun"/>
+            android:text="周日"/>
 
         <TextView
             style="@style/tv_day_style"
-            android:text="Mon"/>
+            android:text="周一"/>
 
         <TextView
             style="@style/tv_day_style"
-            android:text="Tue"/>
+            android:text="周二"/>
 
         <TextView
             style="@style/tv_day_style"
-            android:text="Wed"/>
+            android:text="周三"/>
 
         <TextView
             style="@style/tv_day_style"
-            android:text="Thur"/>
+            android:text="周四"/>
 
         <TextView
             style="@style/tv_day_style"
-            android:text="Fri"/>
+            android:text="周五"/>
 
         <TextView
             style="@style/tv_day_style"
-            android:text="Sat"/>
+            android:text="周五"/>
 
     </LinearLayout>
 
@@ -78,5 +78,10 @@
         android:id="@+id/calendar_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#b1fbb1"/>
 
 </LinearLayout>
